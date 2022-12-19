@@ -9,7 +9,7 @@ import { AuthContext } from "../context/auth.context";
 function LoginPage(props) {
 
   const {storeToken, authenticateUser} = useContext(AuthContext)
-  
+
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");

@@ -27,7 +27,7 @@ function Table() {
         <tr>
           <th>County</th>
           <th>Confirmed</th>
-          <th>Deaths</th>
+          {/* <th>Deaths</th> */}
         </tr>
       </thead>
       <tbody>

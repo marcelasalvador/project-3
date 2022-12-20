@@ -1,7 +1,7 @@
 import ShelbyCountyStats from './ShelbyCountyStats';
 import Table from "./Table"
 import TNStats from './TNStats';
-// import TNMap from "./TNMap"
+import TNMap from "./TNMap"
 
 
 
@@ -18,7 +18,7 @@ function LocationStats() {
           <ShelbyCountyStats />
           <TNStats />
         </div>
-        {/* <TNMap /> */}
+        <TNMap />
       </div> 
         <Table />
   </div>

@@ -1,40 +1,111 @@
-// import React, { useEffect, useState } from 'react';
-// import L from 'leaflet';
-// import axios from 'axios';
+import React from 'react'
+import { useEffect, useState } from 'react'
+import axios from "axios"
+import {
+  MapContainer,
+  TileLayer,
+  Polygon
+} from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+// import CountyMapData from '../CountyMapData';
 
-// const TNMap = () => {
-//   const [counties, setCounties] = useState([]);
 
-//   useEffect(() => {
-//     axios.get("https://disease.sh/v3/covid-19/jhucsse/counties/")
-//       .then(response => {
-//         setCounties(response.data.filter(county => county.province === 'Tennessee'));
-//       })
-//       .catch(error => {
-//         console.error(error);
-//       });
-//   }, []);
 
-//   useEffect(() => {
-//     const mapElements = L.map('map').setView([36.1627, -86.7816], 6);
+const center = [35.860119, -86.660156];
 
-//     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//     }).addTo(mapElements);
+function TNMap() {
 
-//     counties.forEach(county => {
-//       const { latitude, longitude } = county.coordinates;
-//       const { confirmed, deaths } = county.stats;
+  const [polygonsData, setpolygonsData] = useState(null);
+  
 
-//       L.marker([latitude, longitude])
-//         .bindPopup(`<p>Confirmed: ${confirmed}</p><p>Deaths: ${deaths}</p>`)
-//         .addTo(mapElements);
-//     });
-//   }, [counties]);
+  useEffect(() => {
+    axios.get('https://services3.arcgis.com/PWXNAH2YKmZY7lBq/arcgis/rest/services/TN_counties/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson')
+      .then(res => {
+        setpolygonsData(res.data)
+        console.log(res.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []); 
 
-//   return (
-//     <div id="map"></div>
-//   );
-// };
+  const [mapTilerData, setMapTilerData] = useState(null);
 
-// export default TNMap;
+  useEffect(() => {
+    axios.get("https://api.maptiler.com/maps/94adda77-63ae-4df0-a5d6-6dfef4b24725/?key=8apUUdkQojGs86PclFO8#6.3/36.13451/-86.31484")
+      .then(res => {
+        setMapTilerData(res.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []); 
+
+  return (
+    <div>
+
+        <div>
+          {polygonsData && <p>Map data loaded</p>}
+          {mapTilerData && <p>MapTiler data loaded</p>}
+        </div>
+    
+    
+
+        <MapContainer
+              center={center}
+              zoom={10}
+              style={{ width: '80vw', height: '50vh' }}
+            >
+              <TileLayer
+                url={mapTilerData}
+              />
+              {
+                polygonsData.features.map((state) => {
+                  const coordinates = state.geometry.coordinates[0].map((item) => [item[1], item[0]]);
+
+                  return (<Polygon
+                    pathOptions={{
+                      fillColor: '#FD8D3C',
+                      fillOpacity: 0.7,
+                      weight: 2,
+                      opacity: 1,
+                      dashArray: 3,
+                      color: 'white'
+                    }}
+                    positions={coordinates}
+                    eventHandlers={{
+                      mouseover: (e) => {
+                        const layer = e.target;
+                        layer.setStyle({
+                          dashArray: "",
+                          fillColor: "#BD0026",
+                          fillOpacity: 0.7,
+                          weight: 2,
+                          opacity: 1,
+                          color: "white",
+                        })
+                      },
+                      mouseout: (e) => {
+                        const layer = e.target;
+                        layer.setStyle({
+                          fillOpacity: 0.7,
+                          weight: 2,
+                          dashArray: "3",
+                          color: 'white',
+                          fillColor: '#FD8D3C'
+                        });
+                      },
+                      click: (e) => {
+
+                      }
+                    }}
+                  />)
+                })
+              }  
+            </MapContainer>
+    </div>
+    
+  );
+}
+
+export default TNMap

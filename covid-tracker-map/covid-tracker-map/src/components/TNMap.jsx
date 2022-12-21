@@ -5,27 +5,20 @@ import {
   MapContainer,
   TileLayer,
   Polygon
+  
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-// import CountyMapData from '../CountyMapData';
-
 
 
 const center = [35.860119, -86.660156];
 
-function TNMap() {
+function TNMap(props) {
 
   const [polygonsData, setpolygonsData] = useState(null);
-  
+
   useEffect(() => {
     axios.get('https://services3.arcgis.com/PWXNAH2YKmZY7lBq/arcgis/rest/services/TN_counties/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson')
-      // .then(res => {
-      //   setpolygonsData(res.data)
-      //   console.log(res.data);
-      // })
-      // .catch(error => {
-      //   console.error(error);
-      // });
+  
       .then (res => {
         const dataMap = res.data
 
@@ -52,6 +45,8 @@ function TNMap() {
     
   }, []); 
 
+  
+
   return (
     <div>
 
@@ -59,9 +54,6 @@ function TNMap() {
           {polygonsData && <p>Map data loaded</p>}
           {mapTilerData && <p>MapTiler data loaded</p>}
         </div>
-        
-    
-     
 
         <MapContainer
               center={center}
@@ -77,44 +69,53 @@ function TNMap() {
 
                   return (<Polygon
                     pathOptions={{
-                      fillColor: '#FD8D3C',
-                      fillOpacity: 0.7,
+                      fillColor: '#fafafa',
+                      fillOpacity: 0.6,
                       weight: 1,
                       opacity: 1,
                       dashArray: "",
                       color: 'white'
                     }}
                     positions={coordinates}
+                    
                     eventHandlers={{
                       mouseover: (e) => {
                         const layer = e.target;
                         layer.setStyle({
                           dashArray: "",
-                          fillColor: "#BD0026",
+                          fillColor: "#ffcccb",
                           fillOpacity: 0.7,
                           weight: 2,
                           opacity: 1,
                           color: "white",
                         })
+                        
                       },
                       mouseout: (e) => {
                         const layer = e.target;
                         layer.setStyle({
                           fillOpacity: 0.7,
                           weight: 2,
-                          dashArray: "3",
+                          dashArray: "2",
                           color: 'white',
-                          fillColor: '#FD8D3C'
+                          fillColor: '#fafafa'
                         });
                       },
-                      click: (e) => {
+
+                      click: (e)=> {
+                        const layer = e.target
+                        layer.bindPopup("hello")
 
                       }
+                      
                     }}
+                       
                   />)
                 })
               }  
-            </MapContainer> 
+              
+              
+          </MapContainer> 
     </div>
     
   );

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent } from "@mui/material"
 
 
-function Table() {
+function Table(props) {
 
     const [data, setData] = useState([]);
 

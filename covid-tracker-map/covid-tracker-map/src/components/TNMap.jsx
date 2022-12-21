@@ -17,28 +17,39 @@ function TNMap() {
 
   const [polygonsData, setpolygonsData] = useState(null);
   
-
   useEffect(() => {
     axios.get('https://services3.arcgis.com/PWXNAH2YKmZY7lBq/arcgis/rest/services/TN_counties/FeatureServer/1/query?outFields=*&where=1%3D1&f=geojson')
-      .then(res => {
-        setpolygonsData(res.data)
-        console.log(res.data);
+      // .then(res => {
+      //   setpolygonsData(res.data)
+      //   console.log(res.data);
+      // })
+      // .catch(error => {
+      //   console.error(error);
+      // });
+      .then (res => {
+        const dataMap = res.data
+
+        const polygonsData = dataMap
+        setpolygonsData(polygonsData)
       })
       .catch(error => {
-        console.error(error);
-      });
+          console.error(error);
+        });
+
   }, []); 
 
   const [mapTilerData, setMapTilerData] = useState(null);
 
   useEffect(() => {
-    axios.get("https://api.maptiler.com/maps/94adda77-63ae-4df0-a5d6-6dfef4b24725/?key=8apUUdkQojGs86PclFO8#6.3/36.13451/-86.31484")
+    axios.get("https://api.maptiler.com/maps/94adda77-63ae-4df0-a5d6-6dfef4b24725/style.json?key=8apUUdkQojGs86PclFO8")
       .then(res => {
+        console.log(res.data)
         setMapTilerData(res.data);
       })
       .catch(error => {
         console.error(error);
       });
+    
   }, []); 
 
   return (
@@ -48,8 +59,9 @@ function TNMap() {
           {polygonsData && <p>Map data loaded</p>}
           {mapTilerData && <p>MapTiler data loaded</p>}
         </div>
+        
     
-    
+     
 
         <MapContainer
               center={center}
@@ -57,19 +69,19 @@ function TNMap() {
               style={{ width: '80vw', height: '50vh' }}
             >
               <TileLayer
-                url={mapTilerData}
+                url={"https://api.maptiler.com/maps/94adda77-63ae-4df0-a5d6-6dfef4b24725/style.json?key=8apUUdkQojGs86PclFO8"}
               />
               {
-                polygonsData.features.map((state) => {
+                polygonsData && polygonsData.features.map((state) => {
                   const coordinates = state.geometry.coordinates[0].map((item) => [item[1], item[0]]);
 
                   return (<Polygon
                     pathOptions={{
                       fillColor: '#FD8D3C',
                       fillOpacity: 0.7,
-                      weight: 2,
+                      weight: 1,
                       opacity: 1,
-                      dashArray: 3,
+                      dashArray: "",
                       color: 'white'
                     }}
                     positions={coordinates}
@@ -102,7 +114,7 @@ function TNMap() {
                   />)
                 })
               }  
-            </MapContainer>
+            </MapContainer> 
     </div>
     
   );

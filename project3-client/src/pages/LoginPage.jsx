@@ -22,7 +22,7 @@ function LoginPage(props) {
   
   const handleLoginSubmit = (e) => {
     e.preventDefault()
-    axios.post("http://localhost:4000/auth/login", {
+    axios.post(`${import.meta.env.VITE_BACKEND_URL}auth/login`, {
         email,
         password
     })

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-// const API_URL = "http://localhost:4000";
+
 
 
 function SignupPage(props) {
@@ -22,7 +22,7 @@ function SignupPage(props) {
   
   const handleSignupSubmit = (e) => {
     e.preventDefault()
-    axios.post("http://localhost:4000/auth/signup", {
+    axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/signup`, {
         email,
         name,
         password
